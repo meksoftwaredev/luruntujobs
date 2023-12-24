@@ -1,52 +1,41 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Site Bildirimleri</title>
-</head>
-<body>
-    
+ <head>
+    <title>Web sitesi bildirimi</title>
+ </head>
+ <body>
+    <h1>Web sitesi bildirimi</h1>
+    <p>Bu örnek, bir web sitesi açık olmasa bile kullanıcıya bildirim göndermek için JavaScript'in Notification API'sini kullanır.</p>
     <script>
-        // Bildirim izni iste
-Notification.requestPermission().then(function(permission) {
- if (permission === 'granted') {
-    // Kullanıcı bildirimleri kabul etti, böylece bildirim gönderebiliriz
-    var notification = new Notification('Bildirim Başlığı', {
-       body: 'Bildirim İçeriği',
-       icon: 'Bildirim Simgesi URL\'si'
-    });
+      // Tarayıcının Notification API'sini desteklediğini ve kullanıcının bildirimlere izin vermiş olduğunu kontrol edin
+      if ('Notification' in window) {
+       requestPermission();
+      } else {
+       console.error('Bu tarayıcı Notification API\'sini desteklemiyor');
+      }
 
-    // Bildirimin gösterildiği süre dolduğunda tetiklenen olay
-    notification.onclose = function() {
-       console.log('Bildirim kapatıldı');
-    };
+      // Kullanıcıdan bildirim izni iste
+      function requestPermission() {
+       Notification.requestPermission()
+          .then(permission => {
+            if (permission === 'granted') {
+              // Kullanıcı bildirimlere izin verdi
+              showNotification();
+            } else {
+              console.error('Bildirim izni reddedildi');
+            }
+          })
+          .catch(err => {
+            console.error('Bildirim izni sorunu:', err);
+          });
+      }
 
-    // Bildirimin tıklandığında tetiklenen olay
-    notification.onclick = function() {
-       console.log('Bildirim tıklandı');
-    };
- }
-});
-
-
-    // Service Worker kaydedilmesi
-if ('serviceWorker' in navigator) {
- navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
-   console.log('Service Worker kaydedildi:', registration);
- }).catch(function(error) {
-   console.log('Service Worker kaydedilemedi:', error);
- });
-}
-
-
-self.addEventListener('push', function(event) {
- var data = event.data.json();
- var options = {
-    body: data.body,
-    icon: data.icon,
-    badge: data.badge
- };
- event.waitUntil(self.registration.showNotification(data.title, options));
-});
+      // Bir bildirim oluşturun ve kullanıcıya gönderin
+      function showNotification() {
+       new Notification('Web sitesi bildirimi', {
+          body: 'Bu bildirim, web sitesi açık olmasa bile kullanıcıya gönderiliyor.',
+       });
+      }
     </script>
-</body>
+ </body>
 </html>
