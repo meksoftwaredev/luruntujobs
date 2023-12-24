@@ -1,12 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+    <title>Site Bildirimleri</title>
 </head>
 <body>
-  
-  <script src="file-fdl.js"></script>
+    
+    <script>
+        // Bildirim izni iste
+Notification.requestPermission().then(function(permission) {
+ if (permission === 'granted') {
+    // Kullanıcı bildirimleri kabul etti, böylece bildirim gönderebiliriz
+    var notification = new Notification('Bildirim Başlığı', {
+       body: 'Bildirim İçeriği',
+       icon: 'Bildirim Simgesi URL\'si'
+    });
+
+    // Bildirimin gösterildiği süre dolduğunda tetiklenen olay
+    notification.onclose = function() {
+       console.log('Bildirim kapatıldı');
+    };
+
+    // Bildirimin tıklandığında tetiklenen olay
+    notification.onclick = function() {
+       console.log('Bildirim tıklandı');
+    };
+ }
+});
+
+
+    // Service Worker kaydedilmesi
+if ('serviceWorker' in navigator) {
+ navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+   console.log('Service Worker kaydedildi:', registration);
+ }).catch(function(error) {
+   console.log('Service Worker kaydedilemedi:', error);
+ });
+}
+
+
+self.addEventListener('push', function(event) {
+ var data = event.data.json();
+ var options = {
+    body: data.body,
+    icon: data.icon,
+    badge: data.badge
+ };
+ event.waitUntil(self.registration.showNotification(data.title, options));
+});
+    </script>
 </body>
 </html>
