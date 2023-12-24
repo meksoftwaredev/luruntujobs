@@ -1,40 +1,26 @@
 <!DOCTYPE html>
 <html>
  <head>
-    <title>Web sitesi bildirimi</title>
+    <title>Push Demo</title>
  </head>
  <body>
-    <h1>Web sitesi bildirimi</h1>
-    <p>Bu örnek, bir web sitesi açık olmasa bile kullanıcıya bildirim göndermek için JavaScript'in Notification API'sini kullanır.</p>
+    <h1>Push Demo</h1>
+    <button onclick="subscribeUser()">Abone Ol</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/push.js"></script>
     <script>
-      // Tarayıcının Notification API'sini desteklediğini ve kullanıcının bildirimlere izin vermiş olduğunu kontrol edin
-      if ('Notification' in window) {
-       requestPermission();
-      } else {
-       console.error('Bu tarayıcı Notification API\'sini desteklemiyor');
-      }
-
-      // Kullanıcıdan bildirim izni iste
-      function requestPermission() {
-       Notification.requestPermission()
-          .then(permission => {
-            if (permission === 'granted') {
-              // Kullanıcı bildirimlere izin verdi
-              showNotification();
-            } else {
-              console.error('Bildirim izni reddedildi');
-            }
-          })
-          .catch(err => {
-            console.error('Bildirim izni sorunu:', err);
-          });
-      }
-
-      // Bir bildirim oluşturun ve kullanıcıya gönderin
-      function showNotification() {
-       new Notification('Web sitesi bildirimi', {
-          body: 'Bu bildirim, web sitesi açık olmasa bile kullanıcıya gönderiliyor.',
-       });
+      // İstemci tarafındaki kod buraya gelir
+      function subscribeUser() {
+        Push.create('Subscribe to Notifications', {
+          body: 'Click \'Approve\' to Subscribe.',
+          icon: '/assets/images/notification-icon.png',
+          timeout: 4000,
+          vibrate: [100, 50, 100],
+          onClick: function() {
+            window.focus();
+            this.close();
+          }
+        });
       }
     </script>
  </body>
